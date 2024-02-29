@@ -1,13 +1,13 @@
 ---
 layout: post
 comments: true
-title: Emotion Recognition
-author: UCLAdeepvision
-date: 2024-02-04
+title: Facial Emotion Recognition (FER)
+author: Wei Jun Ong, Matthew Teo, Mingyang Li, Pierce Chong
+date: 2024-02-28
 ---
 
 
-> This block is a brief introduction of your project. You can put your abstract here or any headers you want the readers to know.
+> Facial Emotion Recognition is the automated process of detecting and analyzing facial expressions in images or videos using computer vision techniques. This project aims to evaluate and compare different approaches to FER. We will also be running existing models on our own faces and training a new class for emotion recognition.
 
 
 <!--more-->
@@ -15,11 +15,43 @@ date: 2024-02-04
 * TOC
 {:toc}
 
-## Main Content
+## Introduction
 Your survey starts here. You can refer to the [source code](https://github.com/lilianweng/lil-log/tree/master/_posts) of [lil's blogs](https://lilianweng.github.io/lil-log/) for article structure ideas or Markdown syntax. We've provided a [sample post](https://ucladeepvision.github.io/CS188-Projects-2022Winter/2017/06/21/an-overview-of-deep-learning.html) from Lilian Weng and you can find the source code [here](https://raw.githubusercontent.com/UCLAdeepvision/CS188-Projects-2022Winter/main/_posts/2017-06-21-an-overview-of-deep-learning.md)
 
-## Basic Syntax
-### Image
+## Different Approaches to FER
+### 1. Poster V2
+
+
+
+### 2. TO BE DETERMINED
+
+
+### 3. Yolo V5
+
+
+## Comparison of the Approaches
+
+## Bonus:
+
+### 1. Recognizing our own emotions
+
+### 2. Training our own "sleep" class
+
+## Reference
+Please make sure to cite properly in your work, for example:
+
+[1] Redmon, Joseph, et al. "You only look once: Unified, real-time object detection." *Proceedings of the IEEE conference on computer vision and pattern recognition*. 2016.
+
+--------------------------- DELETE LATER ----------
+
+Please use latex to generate formulas, such as:
+
+$$
+\tilde{\mathbf{z}}^{(t)}_i = \frac{\alpha \tilde{\mathbf{z}}^{(t-1)}_i + (1-\alpha) \mathbf{z}_i}{1-\alpha^t}
+$$
+
+or you can write in-text formula $$y = wx + b$$.
+
 Please create a folder with the name of your team id under /assets/images/, put all your images into the folder and reference the images in your main content.
 
 You can add an image to your survey like this:
@@ -29,8 +61,6 @@ You can add an image to your survey like this:
 
 Please cite the image if it is taken from other people's work.
 
-
-### Table
 Here is an example for creating tables, including alignment syntax.
 
 |             | column 1    |  column 2     |
@@ -38,31 +68,12 @@ Here is an example for creating tables, including alignment syntax.
 | row1        | Text        | Text          |
 | row2        | Text        | Text          |
 
-
-
-### Code Block
 ```
 # This is a sample code block
 import torch
 print (torch.__version__)
 ```
 
-
-### Formula
-Please use latex to generate formulas, such as:
-
-$$
-\tilde{\mathbf{z}}^{(t)}_i = \frac{\alpha \tilde{\mathbf{z}}^{(t-1)}_i + (1-\alpha) \mathbf{z}_i}{1-\alpha^t}
-$$
-
-or you can write in-text formula $$y = wx + b$$.
-
-### More Markdown Syntax
 You can find more Markdown syntax at [this page](https://www.markdownguide.org/basic-syntax/).
-
-## Reference
-Please make sure to cite properly in your work, for example:
-
-[1] Redmon, Joseph, et al. "You only look once: Unified, real-time object detection." *Proceedings of the IEEE conference on computer vision and pattern recognition*. 2016.
 
 ---
