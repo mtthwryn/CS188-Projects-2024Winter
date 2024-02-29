@@ -1,13 +1,13 @@
 ---
 layout: post
 comments: true
-title: Facial Emotion Recognition (FER)
+title: Facial Expression Recognition (FER)
 author: Wei Jun Ong, Matthew Teo, Mingyang Li, Pierce Chong
 date: 2024-02-28
 ---
 
 
-> Facial Emotion Recognition is the automated process of detecting and analyzing facial expressions in images or videos using computer vision techniques. This project aims to evaluate and compare different approaches to FER. We will also be running existing models and training a new class for emotion recognition.
+> Facial Expression Recognition is the automated process of detecting and analyzing facial expressions in images or videos using computer vision techniques. This project aims to evaluate and compare different approaches to FER. We will also be running existing models and training a new class for expression recognition.
 
 
 <!--more-->
@@ -33,7 +33,7 @@ Your survey starts here. You can refer to the [source code](https://github.com/l
 
 ## Bonus:
 
-### 1. Recognizing our own emotions
+### 1. Recognizing our own expressions
 
 ### 2. Training our own "sleep" class
 
