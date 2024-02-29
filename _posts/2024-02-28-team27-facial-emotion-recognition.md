@@ -33,9 +33,9 @@ Lastly, another approach to FER is the use of the YOLOv5 (You Only Look Once) ar
 ![]({{'/assets/images/team27/yolo_architecture.png'|relative_url}}) 
 *Fig 1. The default inference flowchart of YOLOv5 [1]*
 
-**Backbone Network:** The backbone network is responsible for extracting features from the input image. In YOLOv5, the <u>CSPDarknet53</u> architecture is used as the backbone, which is a deep CNN with residual connections. It consists of multiple convolutional layers followed by residual blocks, which help in capturing both low-level and high-level features from the image.
+**Backbone Network:** The backbone network is responsible for extracting features from the input image. In YOLOv5, the [CSPDarknet53](https://paperswithcode.com/method/cspdarknet53) architecture is used as the backbone, which is a deep CNN with residual connections. It consists of multiple convolutional layers followed by residual blocks, which help in capturing both low-level and high-level features from the image.
 
-**Neck Network:** The neck network of YOLOv5 employs a <u>PANet</u>  (Path Aggregation Network) module. The PANet module fuses features from different scales to enhance the model's ability to detect objects of various sizes. It consists of bottom-up and top-down pathways that connect features of different resolutions, to generate a multi-scale feature map that aids in detecting objects of different sizes.
+**Neck Network:** The neck network of YOLOv5 employs a [PANet](https://paperswithcode.com/method/panet)  (Path Aggregation Network) module. The PANet module fuses features from different scales to enhance the model's ability to detect objects of various sizes. It consists of bottom-up and top-down pathways that connect features of different resolutions, to generate a multi-scale feature map that aids in detecting objects of different sizes.
 
 **Head Network:** The head network of YOLOv5 is responsible for generating the final predictions It consists of several convolutional layers followed by a global average pooling layer and fully connected layers. These detection layers predict the bounding box coordinates, class probabilities, and other attributes for the detected objects. YOLOv5 uses anchor boxes to assist in predicting accurate bounding boxes for objects of different sizes.
 
@@ -59,7 +59,10 @@ $$
 
 **FER Application**
 
-Due to YOLOv5's efficiency and speed, many papers have adapted it for facial expression recognition by training it on a dataset that includes facial images labeled with expression categories. Evaluating YOLOv5 on the RAF-DB dataset gives us an accuracy of 73.6% and mAP@0.5 (%) of 81.8%, most notably, the inference time was only 15ms.[2] 
+Due to YOLOv5's efficiency and speed, many papers have adapted it for facial expression recognition by training it on a dataset that includes facial images labeled with expression categories. Evaluating YOLOv5 on the [RAF-DB](https://www.v7labs.com/open-datasets/raf-db) dataset gives us an accuracy of 73.6% and mAP@0.5 (%) of 81.8%, most notably, the inference time was only 15ms.[3] 
+
+![]({{'/assets/images/team27/yolo_performance.png'|relative_url}}) 
+*Fig 3. Different models experiment on RAF-DB Dataset [3]*
 
 ## Comparison of the Approaches
 
