@@ -7,7 +7,7 @@ date: 2024-02-28
 ---
 
 
-> Facial Emotion Recognition is the automated process of detecting and analyzing facial expressions in images or videos using computer vision techniques. This project aims to evaluate and compare different approaches to FER. We will also be running existing models on our own faces and training a new class for emotion recognition.
+> Facial Emotion Recognition is the automated process of detecting and analyzing facial expressions in images or videos using computer vision techniques. This project aims to evaluate and compare different approaches to FER. We will also be running existing models and training a new class for emotion recognition.
 
 
 <!--more-->
