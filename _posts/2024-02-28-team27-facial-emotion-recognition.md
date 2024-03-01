@@ -70,7 +70,32 @@ Due to YOLOv5's efficiency and speed, many papers have adapted it for facial exp
 
 ### 1. Recognizing our own expressions
 
-### 2. Training our own "sleep" class
+### 2. Training our own "awake" and "sleep" class
+
+To supplement our project, we wanted to explore and train a model with two new custom classes for facial expression recognition. We collated our own dataset of 40 images (20 awake, 20 sleep) and annotated them using RoboFlow. Subsequently, we used the yolov5 architecture to train our own custom model.
+
+![]({{'/assets/images/team27/roboflow_images.png'|relative_url}}) 
+*Fig 4. Image Annotations on Roboflow*
+
+We used transfer learning from yolov5s.pt and trained our model for 150 epochs using a single Google Colab T4 GPU. 
+
+```
+!python train.py --img 416 --batch 16 --epochs 150 --data {dataset.location}/data.yaml --weights yolov5s.pt --cache
+```
+
+Model summary: 157 layers, 7015519 parameters, 0 gradients, 15.8 GFLOPs
+
+|   Class   | Images | Instances |   P   |   R   | mAP50 | mAP50-95 |
+|:---------:|:------:|:---------:|:-----:|:-----:|:-----:|:--------:|
+|    all    |    8   |     8     | 0.76  | 0.597 | 0.781 |  0.696   |
+|   awake   |    8   |     2     | 0.714 |  0.5  | 0.638 |   0.56   |
+|   sleep   |    8   |     6     | 0.806 | 0.695 | 0.924 |  0.831   |
+
+**Run Inference on Trained Weights:**
+
+![]({{'/assets/images/team27/test_images.png'|relative_url}}) 
+*Fig 5. Test Images with Annotations*
+
 
 ## Reference
 
