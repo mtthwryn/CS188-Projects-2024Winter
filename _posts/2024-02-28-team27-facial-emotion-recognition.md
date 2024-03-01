@@ -70,12 +70,17 @@ Due to YOLOv5's efficiency and speed, many papers have adapted it for facial exp
 
 ### 1. Recognizing our own expressions
 
+On top of studying the approaches to FER on paper, we also wanted to run an existing codebase to try out one of the models on our own. We found a YOLOv5 pre-trained model and ran it on our own webcam. This model was trained on the AffectNet dataset, which has 420,299 facial expressions. It also detects 8 basic facial expressions: anger, contempt, disgust, fear, happy, neutral, sad, surprise.
+
+![]({{'/assets/images/team27/yolo_infer.gif'|relative_url}}) 
+*Fig 4. YOLOv5-FER inference on our Webcam*
+
 ### 2. Training our own "awake" and "sleep" class
 
 To supplement our project, we wanted to explore and train a model with two new custom classes for facial expression recognition. We collated our own dataset of 40 images (20 awake, 20 sleep) and annotated them using RoboFlow. Subsequently, we used the yolov5 architecture to train our own custom model.
 
 ![]({{'/assets/images/team27/roboflow_images.png'|relative_url}}) 
-*Fig 4. Image Annotations on Roboflow*
+*Fig 5. Image Annotations on Roboflow*
 
 We used transfer learning from yolov5s.pt and trained our model for 150 epochs using a single Google Colab T4 GPU. 
 
@@ -94,7 +99,7 @@ Model summary: 157 layers, 7015519 parameters, 0 gradients, 15.8 GFLOPs
 **Run Inference on Trained Weights:**
 
 ![]({{'/assets/images/team27/test_images.png'|relative_url}}) 
-*Fig 5. Test Images with Annotations*
+*Fig 6. Test Images with Annotations*
 
 
 ## Reference
