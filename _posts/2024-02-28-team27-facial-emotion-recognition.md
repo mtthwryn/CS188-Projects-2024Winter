@@ -1,13 +1,13 @@
 ---
 layout: post
 comments: true
-title: Facial Expression Recognition (FER)
+title: Exploring different techniques for Facial Expression Recognition (FER)
 author: Wei Jun Ong, Matthew Teo, Mingyang Li, Pierce Chong
 date: 2024-02-28
 ---
 
 
-> Facial Expression Recognition is the automated process of detecting and analyzing facial expressions in images or videos using computer vision techniques. This project aims to evaluate and compare different approaches to FER. We will also be running existing models and training a new class for expression recognition.
+> Facial expression recognition (FER) is a pivotal task in computer vision with applications spanning from human-computer interaction to affective computing. In this project, we conduct a comparative analysis of three prominent model architectures for FER: a convolutional neural network (CNN), POSTERV2 a cross-fusion transformer-based network, and YOLOv5. These architectures represent diverse approaches in leveraging deep learning techniques for facial expression analysis. We evaluate the performance of each model architecture on benchmark datasets, including the RAF-DB and AffectNet, which encompass a wide range of facial expressions under various contexts. The evaluation metrics include accuracy, precision, recall, and F1-score, providing comprehensive insights into the models' capabilities in recognizing facial expressions accurately across different datasets. Our evaluations have shown that the POSTERV2 model outperforms the other models in terms of accuracy and F1-score. We also present a demonstration of the YOLOv5 model running on a webcam and training a custom model to recognize "awake" and "sleep" expressions. Our findings provide valuable insights into the strengths and limitations of different model architectures for FER, which can guide the selection of appropriate models for specific applications. 
 
 
 <!--more-->
@@ -16,14 +16,15 @@ date: 2024-02-28
 {:toc}
 
 ## Introduction
-Your survey starts here. You can refer to the [source code](https://github.com/lilianweng/lil-log/tree/master/_posts) of [lil's blogs](https://lilianweng.github.io/lil-log/) for article structure ideas or Markdown syntax. We've provided a [sample post](https://ucladeepvision.github.io/CS188-Projects-2022Winter/2017/06/21/an-overview-of-deep-learning.html) from Lilian Weng and you can find the source code [here](https://raw.githubusercontent.com/UCLAdeepvision/CS188-Projects-2022Winter/main/_posts/2017-06-21-an-overview-of-deep-learning.md)
+
+Facial expression recognition (FER) is a critical task in computer vision that aims to automatically detect and classify human facial expressions from images or videos. FER has a wide range of applications, including improved human-computer interaction and emotion analysis. In recent years, deep learning techniques have become more widely adopted for FER, enabling the development of highly accurate and robust models for recognizing facial expressions. In this project, we explore three prominent model architectures for FER, including a convolutional neural network (CNN), POSTERV2, and YOLOv5. We hypothesized that PosterV2 will outperform the other models in terms of accuracy and F1-score due to its cross-fusion transformer-based architecture. We evaluate the performance of each model architecture on benchmark datasets, including the RAF-DB and AffectNet, which encompass a wide range of facial expressions under various contexts. Our evaluations include accuracy, precision, recall, and F1-score, providing comprehensive insights into the models' capabilities in recognizing facial expressions accurately across different datasets. Finally, we also present a demonstration of the YOLOv5 running on a webcam and training a custom model to recognize "awake" and "sleep" expressions.
 
 ## Different Approaches to FER
-### 1. Poster V2
+### 1. TO BE DETERMINED
 
 
 
-### 2. TO BE DETERMINED
+### 2. POSTER V2: A simpler and stronger facial expression recognition network
 
 
 ### 3. YOLOv5
