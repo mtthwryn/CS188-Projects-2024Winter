@@ -32,12 +32,46 @@ In this project, we explore three prominent deep neural network architectures fo
 
 ### 2. POSTER V2: A simpler and stronger facial expression recognition network
 
-**Overview** An alternative approach to FER is the POSTER V2 model, an enhanced version of the original POSTER model. The original POSTER model has 4 main features, namely a landmark detector, an image backbone, cross-fusion transformer encoders and a pyramid network. Given an input image, the landmark detector extracts detailed facial landmark features while the image backbone extracts generic image features. Following that, the landmark and image features are concatenated and scaled to different sizes, before interacting via cross-attention in separate cross-fusion transformer encoders for each scale. Finally, the model extracts and integrates the outputs of each encoder into multi-scale features of images and landmarks. Despite achieving state-of-the-art performance in FER, the architecture of the original POSTER model is highly complicated, resulting in expensive computational costs. Hence, POSTER V2 implements 3 key improvements on top of the original POSTER model architecture to not only reduce computational costs, but also enhance model performance.
+**Overview** 
+
+An alternative approach to FER is the POSTER V2 model, an enhanced version of the original POSTER model. The original POSTER model has 4 main features, namely a landmark detector, an image backbone, cross-fusion transformer encoders and a pyramid network. Given an input image, the landmark detector extracts detailed facial landmark features while the image backbone extracts generic image features. Following that, the landmark and image features are concatenated and scaled to different sizes, before interacting via cross-attention in separate cross-fusion transformer encoders for each scale. Finally, the model extracts and integrates the outputs of each encoder into a multi-scale landmark and image feature. Despite achieving state-of-the-art performance in FER, the architecture of the original POSTER model is highly complicated, resulting in expensive computational costs. Hence, POSTER V2 implements 3 key improvements on top of the original POSTER model architecture that not only reduce computational costs, but also enhance model performance.
 
 ![]({{'/assets/images/team27/original_POSTER.png'|relative_url}}) 
 *Fig 1. Original POSTER model architecture [1]*
 
-**Remove Image-to-Landmark Branch** A primary characteristic of the original POSTER model is its two-stream design that consists of both an image-to-landmark branch, and a landmark-to-image branch. To reduce computational cost, the POSTER V2 research team conducted an ablation study to determine which branch plays a more decisive role in model performance, so as to remove the less decisive branch. As seen from the results below, the landmark-to-image branch proved to be the more decisive one. Let us find an intuitive explanation for this trend. In the landmark-to-image branch, image features are guided by landmark features, which are the query vectors in the cross-attention mechanism. Since landmark features highlight the most important regions of the face, it reduces discrepancies within the same class, which are emotions for FER tasks. Furthermore, it reduces focus on face-prevalent regions, thus reducing similarities among different classes. Therefore, by retaining the landmark-to-image branch, POSTER V2 ensures that key FER issues such as intra-class discrepancy and inter-class similarity are mitigated. At the same time, removing the image-to-landmark branch reduces 
+![]({{'/assets/images/team27/POSTER_v2.png'|relative_url}}) 
+*Fig 2. POSTER V2 model architecture [2]*
+
+**Improvement 1: Remove Image-to-Landmark Branch** 
+
+A primary characteristic of the original POSTER model is its two-stream design that consists of both an image-to-landmark branch, and a landmark-to-image branch. To reduce computational cost, the POSTER V2 research team conducted an ablation study to determine which branch plays a more decisive role in model performance, so as to remove the less decisive branch. As seen from the results below, the landmark-to-image branch proved to be the more decisive one. The following explanation accounts for this trend from an intuitive perspective. In the landmark-to-image branch, image features are guided by landmark features, which are the query vectors in the cross-attention mechanism. Since landmark features highlight the most important regions of the face, it reduces discrepancies within the same class, which are emotions for FER tasks. Furthermore, it diverts focus away from face-prevalent regions, thus reducing similarities among different classes. Therefore, by retaining the landmark-to-image branch, POSTER V2 ensures that key FER issues such as intra-class discrepancy and inter-class similarity are mitigated. At the same time, removing the image-to-landmark branch enhances computational efficiency to a much more significant extent than the slight drop in model accuracy.
+
+![]({{'/assets/images/team27/two_stream.png'|relative_url}}) 
+*Fig 3. Removing image-to-landmark vs landmark-to-image branch [3]*
+
+**Improvement 2: Window-Based Cross-Attention**
+
+instead of the vanilla cross-attention mechanism used in the original POSTER model, POSTER v2 opted for window-based cross-attention. As depicted in the visualization below, the first step is to divide the image feature on the right into non-overlapping windows. For each window, the landmark feature is downsampled to the size of the window, following which the cross-attention between the image and landmark features is calculated. This cross-attention calculation is performed for all windows. Compared to the vanilla cross-attention mechanism in the original POSTER model, the time complexity of this step has been reduced from O(N^2) to O(N), thus enhancing the model's computational efficiency. 
+
+![]({{'/assets/images/team27/window_based_cross_attention.png'|relative_url}}) 
+*Fig 4. Window-based cross-attention mechanism [4]*
+
+**Improvement 3: Multi-Scale Feature Extraction**
+
+The goal of multi-scale feature extraction is to capture both global and local patterns in the image. There are several reasons why this is important. First of all, facial expressions comprise fine details such as muscle movements, as well as broad features like face configurations. Furthermore, it makes the model robust to noise and occlusion, thus ensuring that the model performs well in real-world scenarios. It also helps the model adapt to input images in different resolutions. 
+
+Although both POSTER V2 and the original POSTER models utilized multi-scale feature extraction, their implementations are different. The original POSTER model implemented multi-scale feature extraction using the pyramid structure, as image and landmark features of different scales are passed through separate cross-fusion transformer encoders before their outputs are integrated at the end. On the contrary, POSTER V2 extracts multi-scale features directly from the landmark detector and image backbone, before integrating them using a 2-layered vanilla transformer, which enhances the performance of the model. 
+
+**Data Augmentation**
+
+POSTER V2 used Random Horizontal Flipping and Random Erasing as data augmentation methods to improve the model's ability to generalize and reduce overfitting. Random Horizontal Flipping involves randomly selecting a subset of images to flip along its vertical axis. Random Erasing involves randomly selecting a rectangular region within an image and replacing the pixel values in that region with random noise.
+
+**Computing Loss**
+
+POSTER V2 made use of the categorical cross-entropy loss function, where $$t_i$$ is the ground truth and $$s_i$$ is the predicted score for each class $$i$$ in $$C$$. 
+$$
+\text{Loss} = -\sum_{i}^{C} t_i log(s_i)
+$$
 
 ### 3. YOLOv5
 
@@ -67,7 +101,7 @@ The YOLOv5 loss is determined by aggregating three distinct components:
 - Localization Loss (CIoU Loss): Complete IoU loss is employed here to gauge the precision in localizing the object within its respective grid cell.
 
 $$
-\text{loss} = \lambda_1 \cdot L_{\text{cls}} + \lambda_2 \cdot L_{\text{obj}} + \lambda_1 \cdot L_{\text{loc}}
+\text{Loss} = \lambda_1 \cdot L_{\text{cls}} + \lambda_2 \cdot L_{\text{obj}} + \lambda_1 \cdot L_{\text{loc}}
 $$
 
 **FER Application**
