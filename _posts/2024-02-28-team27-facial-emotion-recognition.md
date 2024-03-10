@@ -68,7 +68,8 @@ POSTER V2 used Random Horizontal Flipping and Random Erasing as data augmentatio
 
 **Computing Loss**
 
-POSTER V2 made use of the categorical cross-entropy loss function, where $$t_i$$ is the ground truth and $$s_i$$ is the predicted score for each class $$i$$ in $$C$$. 
+POSTER V2 made use of the categorical cross-entropy loss function, where $t_i$ is the ground truth and $s_i$ is the predicted score for each class $i$ in $C$. 
+
 $$
 \text{Loss} = -\sum_{i}^{C} t_i log(s_i)
 $$
