@@ -27,7 +27,49 @@ In this project, we explore three prominent deep neural network architectures fo
 
 ## Different Approaches to FER
 
-### 1. TO BE DETERMINED
+### 1. Feature Decomposition and Reconstruction Learning (FDRL): Rethinking Facial Expression Information
+
+**Overview**
+
+The FDRL model identifies that there can be large similarities between different expression (inter-class similarities) and differences within the same expression (intra-class discrepancies). Thus, facial expressions are interpreted as a combination of shared information (or “expression similarities”) between different expressions and unique information (or “expression-specific variations”) within the same expression. Expression similarities are represented by shared latent features between expressions, while expression-specific variations are denoted by the feature weights. This way, the model captures more fine-grained features from facial images. The model consists of 4 networks: Backbone Network, Feature Decomposition Network (FDN), Feature Reconstruction Network (FRN), and Expression Prediction Network (EPN).
+
+![]({{'/assets/images/team27/fdrl_architecture.png'|relative_url}}) 
+*Fig 1. FDRL model architecture [4]*
+
+**Backbone Network**
+
+The backbone network is a convolutional neural network used to extract basic features. The paper uses ResNet-18 that is pretrained on the MS-Celeb-1M face recognition database as the model of choice for the backbone network.
+
+**Feature Decomposition Network**
+
+The FDN decomposes basic features from the backbone network into a set of facial action-aware latent features that encode expression similarities. A linear fully-connected layer and ReLU activation is used to extract each latent feature. Recognizing that a subset of latent features can be shared by different facial expressions due to expression similarities, a compactness loss $$L_C$$ is used to penalize distances between latent features and the centers of those latent features. This encourages a more compact set of latent features and reduces variations for the same expression.
+
+**Feature Reconstruction Network**
+
+The FRN encodes expression-specific variations through an Intra-feature Relation Modeling module (Intra-RM) and Inter-feature Relation Modeling module (Inter-RM), and reassembles expression features.
+
+Intra-RM constitutes multiple blocks that model intra-feature relationship, meaning the focus is on each individual latent feature. Each block consists of a linear fully-connected layer and sigmoid activation, and the blocks find the importance of each latent feature as represented by intra-feature relation weights. To ensure distribution of these weights are as close as possible for the same expression, a distribution loss $$L_D$$ is used to penalize distances between weights belonging to the same expression category and the centers of those weights. This encourages weights representing different images in the same expression category to be closely distributed. To further counter imbalances of weight elements in the same weight vector for a particular image, a balance loss $$L_B$$ is computed to distribute the elements in the weight vector. The module returns intra-aware features for each facial image.
+
+Inter-RM, on the other hand, focuses on finding relationship across different latent features. To take into account multiple facial actions that can appear concurrently for each facial expression, a graph neural network is used to learn weights between intra-aware features returned from the Intra-RM module. A message network, comprising of a linear fully-connected layer and ReLU activation, first performs feature encoding on the intra-aware features. Then, a relation message matrix is represented as nodes in a graph, and relation importance between nodes are denoted by weights. Inter-aware features for each facial image are created based on the weighted sum of the corresponding nodes.
+
+With both intra-aware and inter-aware features, importance-aware features are calculated through a linear combination of the 2 types of features. Finally, the summation of importance-aware features for each facial image represents the expression feature for that image.
+
+
+**Expression Prediction Network**
+
+The final part of the model is the expression classifier, which is a linear fully-connected layer. This layer simply receives an input of the reassembled expression features and returns a facial expression label. The classification loss $$L_{cls}$$ is computed by finding the cross-entropy loss.
+
+**Loss Function**
+
+The 4 networks are jointly trained with end-to-end training, by minimizing the following cost function.
+
+$$
+\text{Loss} = L_{cls} + \lambda_1L_C + \lambda_2L_B + \lambda_3L_D
+$$
+
+**Training Implementation**
+
+The paper chooses to train the FDRL model on a TITAN X GPU for 40 epochs with a batch size of 64. The Adam optimization algorithm is selected with the learning rate further manually annealed.
 
 
 ### 2. POSTER V2: A simpler and stronger facial expression recognition network
@@ -37,24 +79,24 @@ In this project, we explore three prominent deep neural network architectures fo
 An alternative approach to FER is the POSTER V2 model, an enhanced version of the original POSTER model. The original POSTER model has 4 main features, namely a landmark detector, an image backbone, cross-fusion transformer encoders and a pyramid network. Given an input image, the landmark detector extracts detailed facial landmark features while the image backbone extracts generic image features. Following that, the landmark and image features are concatenated and scaled to different sizes, before interacting via cross-attention in separate cross-fusion transformer encoders for each scale. Finally, the model extracts and integrates the outputs of each encoder into a multi-scale landmark and image feature. Despite achieving state-of-the-art performance in FER, the architecture of the original POSTER model is highly complicated, resulting in expensive computational costs. Hence, POSTER V2 implements 3 key improvements on top of the original POSTER model architecture that not only reduce computational costs, but also enhance model performance.
 
 ![]({{'/assets/images/team27/original_POSTER.png'|relative_url}}) 
-*Fig 1. Original POSTER model architecture [1]*
+*Fig 2. Original POSTER model architecture [3]*
 
 ![]({{'/assets/images/team27/POSTER_v2.png'|relative_url}}) 
-*Fig 2. POSTER V2 model architecture [2]*
+*Fig 3. POSTER V2 model architecture [3]*
 
 **Improvement 1: Remove Image-to-Landmark Branch** 
 
 A primary characteristic of the original POSTER model is its two-stream design that consists of both an image-to-landmark branch, and a landmark-to-image branch. To reduce computational cost, the POSTER V2 research team conducted an ablation study to determine which branch plays a more decisive role in model performance, so as to remove the less decisive branch. As seen from the results below, the landmark-to-image branch proved to be the more decisive one. The following explanation accounts for this trend from an intuitive perspective. In the landmark-to-image branch, image features are guided by landmark features, which are the query vectors in the cross-attention mechanism. Since landmark features highlight the most important regions of the face, it reduces discrepancies within the same class, which are emotions for FER tasks. Furthermore, it diverts focus away from face-prevalent regions, thus reducing similarities among different classes. Therefore, by retaining the landmark-to-image branch, POSTER V2 ensures that key FER issues such as intra-class discrepancy and inter-class similarity are mitigated. At the same time, removing the image-to-landmark branch enhances computational efficiency to a much more significant extent than the slight drop in model accuracy.
 
 ![]({{'/assets/images/team27/two_stream.png'|relative_url}}) 
-*Fig 3. Removing image-to-landmark vs landmark-to-image branch [3]*
+*Fig 4. Removing image-to-landmark vs landmark-to-image branch [3]*
 
 **Improvement 2: Window-Based Cross-Attention**
 
 instead of the vanilla cross-attention mechanism used in the original POSTER model, POSTER v2 opted for window-based cross-attention. As depicted in the visualization below, the first step is to divide the image feature on the right into non-overlapping windows. For each window, the landmark feature is downsampled to the size of the window, following which the cross-attention between the image and landmark features is calculated. This cross-attention calculation is performed for all windows. Compared to the vanilla cross-attention mechanism in the original POSTER model, the time complexity of this step has been reduced from O(N^2) to O(N), thus enhancing the model's computational efficiency. 
 
 ![]({{'/assets/images/team27/window_based_cross_attention.png'|relative_url}}) 
-*Fig 4. Window-based cross-attention mechanism [4]*
+*Fig 5. Window-based cross-attention mechanism [3]*
 
 **Improvement 3: Multi-Scale Feature Extraction**
 
@@ -68,7 +110,7 @@ POSTER V2 used Random Horizontal Flipping and Random Erasing as data augmentatio
 
 **Computing Loss**
 
-POSTER V2 made use of the categorical cross-entropy loss function, where $t_i$ is the ground truth and $s_i$ is the predicted score for each class $i$ in $C$. 
+POSTER V2 made use of the categorical cross-entropy loss function, where $$t_i$$ is the ground truth and $$s_i$$ is the predicted score for each class $$i$$ in $$C$$. 
 
 $$
 \text{Loss} = -\sum_{i}^{C} t_i log(s_i)
@@ -79,7 +121,7 @@ $$
 Lastly, another approach to FER is the use of the YOLOv5 (You Only Look Once) architecture, which is a popular object detection algorithm that builds upon the previous versions of the YOLO family of models. The architecture of YOLOv5 consists of a backbone network, neck network, and head network as shown in Fig 1.
 
 ![]({{'/assets/images/team27/yolo_architecture.png'|relative_url}}) 
-*Fig 1. The default inference flowchart of YOLOv5 [1]*
+*Fig 6. The default inference flowchart of YOLOv5 [1]*
 
 **Backbone Network:** The backbone network is responsible for extracting features from the input image. In YOLOv5, the [CSPDarknet53](https://paperswithcode.com/method/cspdarknet53) architecture is used as the backbone, which is a deep CNN with residual connections. It consists of multiple convolutional layers followed by residual blocks, which help in capturing both low-level and high-level features from the image.
 
@@ -88,7 +130,7 @@ Lastly, another approach to FER is the use of the YOLOv5 (You Only Look Once) ar
 **Head Network:** The head network of YOLOv5 is responsible for generating the final predictions It consists of several convolutional layers followed by a global average pooling layer and fully connected layers. These detection layers predict the bounding box coordinates, class probabilities, and other attributes for the detected objects. YOLOv5 uses anchor boxes to assist in predicting accurate bounding boxes for objects of different sizes.
 
 ![]({{'/assets/images/team27/darknet53.png'|relative_url}}) 
-*Fig 2. Darknet-53 architecture [2]*
+*Fig 7. Darknet-53 architecture [2]*
 
 **Data Augmentation**
 
@@ -122,16 +164,16 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed etiam laoreet, nunc
 **YoloV5**
 
 ![]({{'/assets/images/team27/yolo_performance.png'|relative_url}}) 
-*Fig 3. Different models experiment on RAF-DB Dataset [3]*
+*Fig 8. Different models experiment on RAF-DB Dataset [6]*
 
-Evaluating YOLOv5 on the RAF-DB dataset gives us an accuracy of 73.6% and mAP@0.5 (%) of 81.8%, most notably, the inference time was only 15ms [3].
+Evaluating YOLOv5 on the RAF-DB dataset gives us an accuracy of 73.6% and mAP@0.5 (%) of 81.8%, most notably, the inference time was only 15ms [6].
 
 **Poster V2**
 
 PosterV2, also known as Poster++, exhibits state-of-the-art performance on the FER task, outperforming the other models in terms of mean accuracy. Out of the three models, Poster++ achieved the highest accuracy on the RAF-DB dataset with an accuracy of 92.21% across all classes.
 
 ![PosterV2]({{'/assets/images/team27/posterv2_params.png'|relative_url}})
-*Fig 4. Performance, parameters and FLOPs of Poster V2 [5]*
+*Fig 9. Performance, parameters and FLOPs of Poster V2 [3]*
 
 Despite acheiving SOTA results on FER, Poster++ maintains a number of parameters (43.7M) comparable to YoloV5 (46.2M). Thus, Poster++ is a much more memory efficient model for the FER task.
 
@@ -166,14 +208,14 @@ Below, we present a demonstration of the YOLOv5 model running on a webcam and tr
 On top of studying the approaches to FER on paper, we also wanted to run an existing codebase to try out one of the models on our own. We found a YOLOv5 pre-trained model and ran it on our own webcam. This model was trained on the [AffectNet](http://mohammadmahoor.com/affectnet/) dataset, which has 420,299 facial expressions. It also detects 8 basic facial expressions: anger, contempt, disgust, fear, happy, neutral, sad, surprise.
 
 ![]({{'/assets/images/team27/yolo_infer.gif'|relative_url}}) 
-*Fig 4. YOLOv5-FER inference on our Webcam*
+*Fig 10. YOLOv5-FER inference on our Webcam*
 
 ### 2. Training our own "awake" and "sleep" class
 
 To supplement our project, we wanted to explore and train a model with two new custom classes for facial expression recognition. We collated our own dataset of 40 images (20 awake, 20 sleep) and annotated them using RoboFlow. Subsequently, we used the yolov5 architecture to train our own custom model.
 
 ![]({{'/assets/images/team27/roboflow_images.png'|relative_url}}) 
-*Fig 5. Image Annotations on Roboflow*
+*Fig 11. Image Annotations on Roboflow*
 
 We used transfer learning from yolov5s.pt and trained our model for 150 epochs using a single Google Colab T4 GPU. 
 
@@ -192,20 +234,22 @@ Model summary: 157 layers, 7015519 parameters, 0 gradients, 15.8 GFLOPs
 **Run Inference on Trained Weights:**
 
 ![]({{'/assets/images/team27/test_images.png'|relative_url}}) 
-*Fig 6. Test Images with Annotations*
+*Fig 12. Test Images with Annotations*
 
 
 ## Reference
 
 [1] Liu H, Sun F, Gu J, Deng L. SF-YOLOv5: A Lightweight Small Object Detection Algorithm Based on Improved Feature Fusion Mode. Sensors. 2022; 22(15):5817. https://doi.org/10.3390/s22155817
 
-[2] Lu, Z., Lu, J., Ge, Q., Zhan, T.: Multi-object detection method based on Yolo and ResNet Hybrid Networks. In: 2019 IEEE 4th International Conference on Advanced Robotics and Mechatronics (ICARM). (2019) https://doi.org/10.1109/icarm.2019.8833671
+[2] Lu, Z., Lu, J., Ge, Q., Zhan, T. Multi-object detection method based on Yolo and ResNet Hybrid Networks. 2019 IEEE 4th International Conference on Advanced Robotics and Mechatronics (ICARM). (2019) https://doi.org/10.1109/icarm.2019.8833671
 
-[3] Zhong, H., Han, T., Xia, W. et al. Research on real-time teachers’ facial expression recognition based on YOLOv5 and attention mechanisms. EURASIP J. Adv. Signal Process. 2023, 55 (2023). https://doi.org/10.1186/s13634-023-01019-w
+[3] Mao, Jiawei and Xu, Rui and Yin, Xuesong and Chang, Yuanqi and Nie, Binling and Huang, Aibin. POSTER V2: A simpler and stronger facial expression recognition network. arXiv preprint arXiv:2301.12149. (2023) https://arxiv.org/pdf/2301.12149
 
-[4] Ultralytics. YOLOV5. PyTorch Hub. https://pytorch.org/hub/ultralytics_yolov5/
+[4] Ruan, D., Yan, Y., Lai, S., Chai, Z., Shen, C., Wang, H. Feature decomposition and reconstruction learning for effective facial expression recognition. Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 7660–7669 (2021) https://arxiv.org/pdf/2104.05160
 
-[5] Mao, Jiawei and Xu, Rui and Yin, Xuesong and Chang, Yuanqi and Nie, Binling and Huang, Aibin. POSTER V2: A simpler and stronger facial expression recognition network. arXiv preprint arXiv:2301.12149. (2023) https://arxiv.org/pdf/2301.12149
+[5] Ultralytics. YOLOV5. PyTorch Hub. https://pytorch.org/hub/ultralytics_yolov5/
+
+[6] Zhong, H., Han, T., Xia, W. et al. Research on real-time teachers’ facial expression recognition based on YOLOv5 and attention mechanisms. EURASIP J. Adv. Signal Process. 2023, 55 (2023). https://doi.org/10.1186/s13634-023-01019-w
 
 --------------------------- DELETE LATER ----------
 
