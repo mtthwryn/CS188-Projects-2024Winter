@@ -30,9 +30,14 @@ In this project, we explore three prominent deep neural network architectures fo
 ### 1. TO BE DETERMINED
 
 
-
 ### 2. POSTER V2: A simpler and stronger facial expression recognition network
 
+**Overview** An alternative approach to FER is the POSTER V2 model, an enhanced version of the original POSTER model. The original POSTER model has 4 main features, namely a landmark detector, an image backbone, cross-fusion transformer encoders and a pyramid network. Given an input image, the landmark detector extracts detailed facial landmark features while the image backbone extracts generic image features. Following that, the landmark and image features are concatenated and scaled to different sizes, before interacting via cross-attention in separate cross-fusion transformer encoders for each scale. Finally, the model extracts and integrates the outputs of each encoder into multi-scale features of images and landmarks. Despite achieving state-of-the-art performance in FER, the architecture of the original POSTER model is highly complicated, resulting in expensive computational costs. Hence, POSTER V2 implements 3 key improvements on top of the original POSTER model architecture to not only reduce computational costs, but also enhance model performance.
+
+![]({{'/assets/images/team27/original_POSTER.png'|relative_url}}) 
+*Fig 1. Original POSTER model architecture [1]*
+
+**Remove Image-to-Landmark Branch** A primary characteristic of the original POSTER model is its two-stream design that consists of both an image-to-landmark branch, and a landmark-to-image branch. To reduce computational cost, the POSTER V2 research team conducted an ablation study to determine which branch plays a more decisive role in model performance, so as to remove the less decisive branch. As seen from the results below, the landmark-to-image branch proved to be the more decisive one. Let us find an intuitive explanation for this trend. In the landmark-to-image branch, image features are guided by landmark features, which are the query vectors in the cross-attention mechanism. Since landmark features highlight the most important regions of the face, it reduces discrepancies within the same class, which are emotions for FER tasks. Furthermore, it reduces focus on face-prevalent regions, thus reducing similarities among different classes. Therefore, by retaining the landmark-to-image branch, POSTER V2 ensures that key FER issues such as intra-class discrepancy and inter-class similarity are mitigated. At the same time, removing the image-to-landmark branch reduces 
 
 ### 3. YOLOv5
 
@@ -48,7 +53,7 @@ Lastly, another approach to FER is the use of the YOLOv5 (You Only Look Once) ar
 **Head Network:** The head network of YOLOv5 is responsible for generating the final predictions It consists of several convolutional layers followed by a global average pooling layer and fully connected layers. These detection layers predict the bounding box coordinates, class probabilities, and other attributes for the detected objects. YOLOv5 uses anchor boxes to assist in predicting accurate bounding boxes for objects of different sizes.
 
 ![]({{'/assets/images/team27/darknet53.png'|relative_url}}) 
-*Fig 2. Darknet-53 architechture [2]*
+*Fig 2. Darknet-53 architecture [2]*
 
 **Data Augmentation**
 
