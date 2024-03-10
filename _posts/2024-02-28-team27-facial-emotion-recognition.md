@@ -33,7 +33,7 @@ In this project, we explore three prominent deep neural network architectures fo
 
 The FDRL model identifies that there can be large similarities between different expression (inter-class similarities) and differences within the same expression (intra-class discrepancies). Thus, facial expressions are interpreted as a combination of shared information (or “expression similarities”) between different expressions and unique information (or “expression-specific variations”) within the same expression. Expression similarities are represented by shared latent features between expressions, while expression-specific variations are denoted by the feature weights. This way, the model captures more fine-grained features from facial images. The model consists of 4 networks: Backbone Network, Feature Decomposition Network (FDN), Feature Reconstruction Network (FRN), and Expression Prediction Network (EPN).
 
-![]({{'/assets/images/team27/fdrl_architecture'|relative_url}}) 
+![]({{'/assets/images/team27/fdrl_architecture.png'|relative_url}}) 
 *Fig 1. FDRL model architecture [4]*
 
 **Backbone Network**
@@ -42,13 +42,13 @@ The backbone network is a convolutional neural network used to extract basic fea
 
 **Feature Decomposition Network**
 
-The FDN decomposes basic features from the backbone network into a set of facial action-aware latent features that encode expression similarities. A linear fully-connected layer and ReLU activation is used to extract each latent feature. Recognizing that a subset of latent features can be shared by different facial expressions due to expression similarities, a compactness loss $L_C$ is used to penalize distances between latent features and the centers of those latent features. This encourages a more compact set of latent features and reduces variations for the same expression.
+The FDN decomposes basic features from the backbone network into a set of facial action-aware latent features that encode expression similarities. A linear fully-connected layer and ReLU activation is used to extract each latent feature. Recognizing that a subset of latent features can be shared by different facial expressions due to expression similarities, a compactness loss $$L_C$$ is used to penalize distances between latent features and the centers of those latent features. This encourages a more compact set of latent features and reduces variations for the same expression.
 
 **Feature Reconstruction Network**
 
 The FRN encodes expression-specific variations through an Intra-feature Relation Modeling module (Intra-RM) and Inter-feature Relation Modeling module (Inter-RM), and reassembles expression features.
 
-Intra-RM constitutes multiple blocks that model intra-feature relationship, meaning the focus is on each individual latent feature. Each block consists of a linear fully-connected layer and sigmoid activation, and the blocks find the importance of each latent feature as represented by intra-feature relation weights. To ensure distribution of these weights are as close as possible for the same expression, a distribution loss $L_D$ is used to penalize distances between weights belonging to the same expression category and the centers of those weights. This encourages weights representing different images in the same expression category to be closely distributed. To further counter imbalances of weight elements in the same weight vector for a particular image, a balance loss $L_B$ is computed to distribute the elements in the weight vector. The module returns intra-aware features for each facial image.
+Intra-RM constitutes multiple blocks that model intra-feature relationship, meaning the focus is on each individual latent feature. Each block consists of a linear fully-connected layer and sigmoid activation, and the blocks find the importance of each latent feature as represented by intra-feature relation weights. To ensure distribution of these weights are as close as possible for the same expression, a distribution loss $L_D$ is used to penalize distances between weights belonging to the same expression category and the centers of those weights. This encourages weights representing different images in the same expression category to be closely distributed. To further counter imbalances of weight elements in the same weight vector for a particular image, a balance loss $$L_B$$ is computed to distribute the elements in the weight vector. The module returns intra-aware features for each facial image.
 
 Inter-RM, on the other hand, focuses on finding relationship across different latent features. To take into account multiple facial actions that can appear concurrently for each facial expression, a graph neural network is used to learn weights between intra-aware features returned from the Intra-RM module. A message network, comprising of a linear fully-connected layer and ReLU activation, first performs feature encoding on the intra-aware features. Then, a relation message matrix is represented as nodes in a graph, and relation importance between nodes are denoted by weights. Inter-aware features for each facial image are created based on the weighted sum of the corresponding nodes.
 
@@ -57,7 +57,7 @@ With both intra-aware and inter-aware features, importance-aware features are ca
 
 **Expression Prediction Network**
 
-The final part of the model is the expression classifier, which is a linear fully-connected layer. This layer simply receives an input of the reassembled expression features and returns a facial expression label. The classification loss $L_{cls}$ is computed by finding the cross-entropy loss.
+The final part of the model is the expression classifier, which is a linear fully-connected layer. This layer simply receives an input of the reassembled expression features and returns a facial expression label. The classification loss $$L_{cls}$$ is computed by finding the cross-entropy loss.
 
 **Loss Function**
 
@@ -110,7 +110,7 @@ POSTER V2 used Random Horizontal Flipping and Random Erasing as data augmentatio
 
 **Computing Loss**
 
-POSTER V2 made use of the categorical cross-entropy loss function, where $t_i$ is the ground truth and $s_i$ is the predicted score for each class $i$ in $C$. 
+POSTER V2 made use of the categorical cross-entropy loss function, where $$t_i$$ is the ground truth and $$s_i$$ is the predicted score for each class $$i$$ in $$C$$. 
 
 $$
 \text{Loss} = -\sum_{i}^{C} t_i log(s_i)
