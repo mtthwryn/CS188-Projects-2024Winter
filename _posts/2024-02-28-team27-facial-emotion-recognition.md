@@ -1,13 +1,13 @@
 ---
 layout: post
 comments: true
-title: Facial Expression Recognition (FER)
+title: Exploring different techniques for Facial Expression Recognition (FER)
 author: Wei Jun Ong, Matthew Teo, Mingyang Li, Pierce Chong
 date: 2024-02-28
 ---
 
 
-> Facial Expression Recognition is the automated process of detecting and analyzing facial expressions in images or videos using computer vision techniques. This project aims to evaluate and compare different approaches to FER. We will also be running existing models and training a new class for expression recognition.
+> Facial expression recognition (FER) is a pivotal task in computer vision with applications spanning from human-computer interaction to affective computing. In this project, we conduct a comparative analysis of three prominent model architectures for FER: a convolutional neural network (CNN), POSTERV2 [1] a cross-fusion transformer-based network, and YOLOv5. These architectures represent diverse approaches in leveraging deep learning techniques for facial expression analysis. We evaluate the performance of each model architecture on RAF-DB, which encompass a wide range of facial expressions under various contexts. The evaluation metrics include accuracy and number of parameters, which give comprehensive insights into the models' capabilities in recognizing facial expressions accurately across different datasets. Our evaluations have shown that the POSTERV2 model outperforms the other models in terms of accuracy. We also present a demonstration of the YOLOv5 model running on a webcam and training a custom model to recognize "awake" and "sleep" expressions. Our findings provide valuable insights into the strengths and limitations of different model architectures for FER, which can guide the selection of appropriate models for specific applications. 
 
 
 <!--more-->
@@ -16,14 +16,22 @@ date: 2024-02-28
 {:toc}
 
 ## Introduction
-Your survey starts here. You can refer to the [source code](https://github.com/lilianweng/lil-log/tree/master/_posts) of [lil's blogs](https://lilianweng.github.io/lil-log/) for article structure ideas or Markdown syntax. We've provided a [sample post](https://ucladeepvision.github.io/CS188-Projects-2022Winter/2017/06/21/an-overview-of-deep-learning.html) from Lilian Weng and you can find the source code [here](https://raw.githubusercontent.com/UCLAdeepvision/CS188-Projects-2022Winter/main/_posts/2017-06-21-an-overview-of-deep-learning.md)
+
+
+Facial expression recognition (FER) is a pivotal area of computer vision and artificial intelligence focused on identifying human emotions from facial expressions captured in images or videos. It holds significant implications for various fields, including human-computer interaction, safety, and entertainment. Over the years, researchers have explored different approaches to tackle this task, with deep learning approaches becoming more popular in recent years. Classical approaches to facial expression recognition typically relied on handcrafted features and traditional machine learning algorithms. These methods involved extracting facial features such as edges, corners, or texture descriptors from images, followed by training classifiers to recognize specific emotional states based on these features. Techniques like Support Vector Machines (SVMs), Decision Trees, or k-Nearest Neighbors (k-NN) were commonly employed for classification tasks. While classical approaches laid the foundation for facial expression recognition, they often encountered limitations. One major challenge was the reliance on manually engineered features, which might not fully capture the complexity and variability of facial expressions across different individuals, lighting conditions, and facial poses. Additionally, these methods struggled with handling variations in facial expressions caused by factors like occlusions, facial hair, or cultural differences, leading to reduced accuracy and robustness.
+
+Deep learning methods have emerged as a more successful paradigm in facial expression recognition, offering significant improvements over classical techniques. Deep neural networks excel at learning representations directly from large-scale datasets via powerful computational resources, thus removing the need for handcrafted features. A key advantage of this is the ability to automatically capture important features within facial images, enabling more robust and accurate recognition of facial expressions under various conditions.
+
+In this project, we explore three prominent deep neural network architectures for FER, including a convolutional neural network (CNN), POSTERV2, and YOLOv5. We show that PosterV2 outperforms the other models in terms of accuracy due to its cross-fusion transformer-based architecture. Each model was evaluated on RAF-DB, a benchmark dataset, and we compare their accuracies. Finally, we compare between the three models and discuss their advantages and limitations in the context of FER, before ending with a demonstration of the YOLOv5 model running on a webcam and training a custom model to recognize "awake" and "sleep" expressions.
+
 
 ## Different Approaches to FER
-### 1. Poster V2
+
+### 1. TO BE DETERMINED
 
 
 
-### 2. TO BE DETERMINED
+### 2. POSTER V2: A simpler and stronger facial expression recognition network
 
 
 ### 3. YOLOv5
@@ -59,18 +67,63 @@ $$
 
 **FER Application**
 
-Due to YOLOv5's efficiency and speed, many papers have adapted it for facial expression recognition by training it on a dataset that includes facial images labeled with expression categories. Evaluating YOLOv5 on the [RAF-DB](https://www.v7labs.com/open-datasets/raf-db) dataset gives us an accuracy of 73.6% and mAP@0.5 (%) of 81.8%, most notably, the inference time was only 15ms.[3] 
+Due to YOLOv5's efficiency and speed, many papers have adapted it for facial expression recognition by training it on a dataset that includes facial images labeled with expression categories. With its small size and fast inference time, YOLOv5 is suitable for real-time applications such as emotion recognition in video calls, driver monitoring systems, and emotion-aware advertising. It can also be used in applications on low-powered edge devices such as smartphones and IoT devices.
+
+## Comparison of the Approaches
+
+### Performance Evaluation
+
+We compare the performance of the three model architectures on [RAF-DB](https://www.v7labs.com/open-datasets/raf-db), a popular dataset for benchmarking FER. 
+
+**Undetermined model**
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed etiam laoreet, nunc nec lacinia tincidunt, nunc nunc
+
+**YoloV5**
 
 ![]({{'/assets/images/team27/yolo_performance.png'|relative_url}}) 
 *Fig 3. Different models experiment on RAF-DB Dataset [3]*
 
-## Comparison of the Approaches
+Evaluating YOLOv5 on the RAF-DB dataset gives us an accuracy of 73.6% and mAP@0.5 (%) of 81.8%, most notably, the inference time was only 15ms [3].
+
+**Poster V2**
+
+PosterV2, also known as Poster++, exhibits state-of-the-art performance on the FER task, outperforming the other models in terms of mean accuracy. Out of the three models, Poster++ achieved the highest accuracy on the RAF-DB dataset with an accuracy of 92.21% across all classes.
+
+![PosterV2]({{'/assets/images/team27/posterv2_params.png'|relative_url}})
+*Fig 4. Performance, parameters and FLOPs of Poster V2 [5]*
+
+Despite acheiving SOTA results on FER, Poster++ maintains a number of parameters (43.7M) comparable to YoloV5 (46.2M). Thus, Poster++ is a much more memory efficient model for the FER task.
+
+### Advantages and Limitations of each approach
+
+**Undetermined model**
+
+- Advantages:
+    -
+
+- Limitations:
+    -
+
+**YoloV5**
+
+YoloV5 is a lightweight and efficient model for FER, with a fast inference time of 15ms. It is also capable of detecting multiple objects in an image, making it suitable for real-time applications. However, YoloV5 may not achieve the same level of accuracy as other models such as PosterV2, and might not be as robust in detecting facial expressions under various contexts like occulusion or low-light conditions.
+
+**Poster V2**
+
+PosterV2 is a state-of-the-art model for FER, achieving the highest accuracy on the RAF-DB dataset. It is also a lightweight model with a relatively small number of parameters similar to YoloV5, making it efficient for deployment on edge devices. However, PosterV2 may have a longer inference time compared to YoloV5 due to the higher computational burden of the transformer architecture, and may not be as suitable for real-time applications.
+
+## Conclusion
+
+In this project, we conducted a comparative analysis of three prominent model architectures for FER, including a convolutional neural network (CNN), POSTERV2, and YOLOv5. Our evaluations have shown that the POSTERV2 model outperforms the other models in terms of accuracy, but might be the most computationally intensive. 
+
+Below, we present a demonstration of the YOLOv5 model running on a webcam and training a custom model to recognize "awake" and "sleep" expressions. This demonstration shows a potential application of YOLOv5 in real-time FER, and the process of training custom models for specific facial expressions.
 
 ## Bonus:
 
 ### 1. Recognizing our own expressions
 
-On top of studying the approaches to FER on paper, we also wanted to run an existing codebase to try out one of the models on our own. We found a YOLOv5 pre-trained model and ran it on our own webcam. This model was trained on the AffectNet dataset, which has 420,299 facial expressions. It also detects 8 basic facial expressions: anger, contempt, disgust, fear, happy, neutral, sad, surprise.
+On top of studying the approaches to FER on paper, we also wanted to run an existing codebase to try out one of the models on our own. We found a YOLOv5 pre-trained model and ran it on our own webcam. This model was trained on the [AffectNet](http://mohammadmahoor.com/affectnet/) dataset, which has 420,299 facial expressions. It also detects 8 basic facial expressions: anger, contempt, disgust, fear, happy, neutral, sad, surprise.
 
 ![]({{'/assets/images/team27/yolo_infer.gif'|relative_url}}) 
 *Fig 4. YOLOv5-FER inference on our Webcam*
@@ -109,6 +162,10 @@ Model summary: 157 layers, 7015519 parameters, 0 gradients, 15.8 GFLOPs
 [2] Lu, Z., Lu, J., Ge, Q., Zhan, T.: Multi-object detection method based on Yolo and ResNet Hybrid Networks. In: 2019 IEEE 4th International Conference on Advanced Robotics and Mechatronics (ICARM). (2019) https://doi.org/10.1109/icarm.2019.8833671
 
 [3] Zhong, H., Han, T., Xia, W. et al. Research on real-time teachers’ facial expression recognition based on YOLOv5 and attention mechanisms. EURASIP J. Adv. Signal Process. 2023, 55 (2023). https://doi.org/10.1186/s13634-023-01019-w
+
+[4] Ultralytics. YOLOV5. PyTorch Hub. https://pytorch.org/hub/ultralytics_yolov5/
+
+[5] Mao, Jiawei and Xu, Rui and Yin, Xuesong and Chang, Yuanqi and Nie, Binling and Huang, Aibin. POSTER V2: A simpler and stronger facial expression recognition network. arXiv preprint arXiv:2301.12149. (2023) https://arxiv.org/pdf/2301.12149
 
 --------------------------- DELETE LATER ----------
 
