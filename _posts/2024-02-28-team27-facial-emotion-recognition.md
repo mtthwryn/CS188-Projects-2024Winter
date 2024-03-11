@@ -157,14 +157,18 @@ Due to YOLOv5's efficiency and speed, many papers have adapted it for facial exp
 
 We compare the performance of the three model architectures on [RAF-DB](https://www.v7labs.com/open-datasets/raf-db), a popular dataset for benchmarking FER. 
 
-**Undetermined model**
+**FDRL**
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed etiam laoreet, nunc nec lacinia tincidunt, nunc nunc
+![]({{'/assets/images/team27/FDRL_performance.png'|relative_url}}) 
+*Fig 8. Performance of FDRL on RAF-DB Dataset [6]*
+
+The FDRL model achieved an accuracy of 89.47% on the RAF-DB dataset, which is a competitive result compared to other state-of-the-art models.
+
 
 **YoloV5**
 
 ![]({{'/assets/images/team27/yolo_performance.png'|relative_url}}) 
-*Fig 8. Different models experiment on RAF-DB Dataset [6]*
+*Fig 9. Different models experiment on RAF-DB Dataset [6]*
 
 Evaluating YOLOv5 on the RAF-DB dataset gives us an accuracy of 73.6% and mAP@0.5 (%) of 81.8%, most notably, the inference time was only 15ms [6].
 
@@ -173,27 +177,23 @@ Evaluating YOLOv5 on the RAF-DB dataset gives us an accuracy of 73.6% and mAP@0.
 PosterV2, also known as Poster++, exhibits state-of-the-art performance on the FER task, outperforming the other models in terms of mean accuracy. Out of the three models, Poster++ achieved the highest accuracy on the RAF-DB dataset with an accuracy of 92.21% across all classes.
 
 ![PosterV2]({{'/assets/images/team27/posterv2_params.png'|relative_url}})
-*Fig 9. Performance, parameters and FLOPs of Poster V2 [3]*
+*Fig 10. Performance, parameters and FLOPs of Poster V2 [3]*
 
 Despite acheiving SOTA results on FER, Poster++ maintains a number of parameters (43.7M) comparable to YoloV5 (46.2M). Thus, Poster++ is a much more memory efficient model for the FER task.
 
 ### Advantages and Limitations of each approach
 
-**Undetermined model**
+**FDRL**
 
-- Advantages:
-    -
-
-- Limitations:
-    -
+FDRL is specifically designed to handle the nuances of facial expressions by distinguishing between shared and unique information across different expressions, which could enhance its sensitivity to subtle facial cues. The method's decomposition and reconstruction process allows for a more detailed and nuanced understanding of facial features, potentially leading to higher accuracy in complex scenarios. However,the complexity of the model, with its multiple networks (Backbone, FDN, FRN, and EPN), could lead to higher computational costs and longer training times compared to more streamlined models. The model may require a substantial amount of data to effectively learn the decomposed and reconstructed features, potentially limiting its effectiveness in low-data scenarios.
 
 **YoloV5**
 
-YoloV5 is a lightweight and efficient model for FER, with a fast inference time of 15ms. It is also capable of detecting multiple objects in an image, making it suitable for real-time applications. However, YoloV5 may not achieve the same level of accuracy as other models such as PosterV2, and might not be as robust in detecting facial expressions under various contexts like occulusion or low-light conditions.
+YOLOv5 is renowned for its speed and efficiency, making it highly suitable for real-time applications and deployment on edge devices. The model's robustness and generalization capabilities are enhanced through various data augmentation techniques, making it versatile across different scenarios and conditions. While YOLOv5 offers a good balance between speed and accuracy, it may not achieve the same level of fine-grained accuracy in FER as more specialized models like POSTER V2, particularly in complex or nuanced expression recognition tasks. Being primarily an object detection framework, YOLOv5 will require additional tuning or adaptation to fully capture the subtleties of human facial expressions, as opposed to models specifically designed for FER.
 
 **Poster V2**
 
-PosterV2 is a state-of-the-art model for FER, achieving the highest accuracy on the RAF-DB dataset. It is also a lightweight model with a relatively small number of parameters similar to YoloV5, making it efficient for deployment on edge devices. However, PosterV2 may have a longer inference time compared to YoloV5 due to the higher computational burden of the transformer architecture, and may not be as suitable for real-time applications.
+POSTER V2, with its transformer-based architecture, excels in capturing both global and local dependencies in the data, leading to state-of-the-art performance in FER, particularly noted for its high accuracy on the RAF-DB dataset. The model's simplification over its predecessor by removing the image-to-landmark branch and employing window-based cross-attention and multi-scale feature extraction contributes to its computational efficiency while maintaining strong performance. Despite being lighter than its predecessor, POSTER V2 might still be relatively more computationally intensive than more traditional CNN models like YOLOv5, possibly affecting its deployment in real-time or resource-constrained environments. The model's reliance on landmark detection might make it sensitive to errors or variations in landmark localization, potentially affecting its robustness across diverse or challenging datasets.
 
 ## Conclusion
 
@@ -208,14 +208,14 @@ Below, we present a demonstration of the YOLOv5 model running on a webcam and tr
 On top of studying the approaches to FER on paper, we also wanted to run an existing codebase to try out one of the models on our own. We found a YOLOv5 pre-trained model and ran it on our own webcam. This model was trained on the [AffectNet](http://mohammadmahoor.com/affectnet/) dataset, which has 420,299 facial expressions. It also detects 8 basic facial expressions: anger, contempt, disgust, fear, happy, neutral, sad, surprise.
 
 ![]({{'/assets/images/team27/yolo_infer.gif'|relative_url}}) 
-*Fig 10. YOLOv5-FER inference on our Webcam*
+*Fig 11. YOLOv5-FER inference on our Webcam*
 
 ### 2. Training our own "awake" and "sleep" class
 
 To supplement our project, we wanted to explore and train a model with two new custom classes for facial expression recognition. We collated our own dataset of 40 images (20 awake, 20 sleep) and annotated them using RoboFlow. Subsequently, we used the yolov5 architecture to train our own custom model.
 
 ![]({{'/assets/images/team27/roboflow_images.png'|relative_url}}) 
-*Fig 11. Image Annotations on Roboflow*
+*Fig 12. Image Annotations on Roboflow*
 
 We used transfer learning from yolov5s.pt and trained our model for 150 epochs using a single Google Colab T4 GPU. 
 
@@ -234,7 +234,7 @@ Model summary: 157 layers, 7015519 parameters, 0 gradients, 15.8 GFLOPs
 **Run Inference on Trained Weights:**
 
 ![]({{'/assets/images/team27/test_images.png'|relative_url}}) 
-*Fig 12. Test Images with Annotations*
+*Fig 13. Test Images with Annotations*
 
 
 ## Reference
@@ -250,39 +250,5 @@ Model summary: 157 layers, 7015519 parameters, 0 gradients, 15.8 GFLOPs
 [5] Ultralytics. YOLOV5. PyTorch Hub. https://pytorch.org/hub/ultralytics_yolov5/
 
 [6] Zhong, H., Han, T., Xia, W. et al. Research on real-time teachers’ facial expression recognition based on YOLOv5 and attention mechanisms. EURASIP J. Adv. Signal Process. 2023, 55 (2023). https://doi.org/10.1186/s13634-023-01019-w
-
---------------------------- DELETE LATER ----------
-
-Please use latex to generate formulas, such as:
-
-$$
-\tilde{\mathbf{z}}^{(t)}_i = \frac{\alpha \tilde{\mathbf{z}}^{(t-1)}_i + (1-\alpha) \mathbf{z}_i}{1-\alpha^t}
-$$
-
-or you can write in-text formula $$y = wx + b$$.
-
-Please create a folder with the name of your team id under /assets/images/, put all your images into the folder and reference the images in your main content.
-
-You can add an image to your survey like this:
-![YOLO]({{ '/assets/images/UCLAdeepvision/object_detection.png' | relative_url }})
-{: style="width: 400px; max-width: 100%;"}
-*Fig 1. YOLO: An object detection method in computer vision* [1].
-
-Please cite the image if it is taken from other people's work.
-
-Here is an example for creating tables, including alignment syntax.
-
-|             | column 1    |  column 2     |
-| :---        |    :----:   |          ---: |
-| row1        | Text        | Text          |
-| row2        | Text        | Text          |
-
-```
-# This is a sample code block
-import torch
-print (torch.__version__)
-```
-
-You can find more Markdown syntax at [this page](https://www.markdownguide.org/basic-syntax/).
 
 ---
