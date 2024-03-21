@@ -7,7 +7,7 @@ date: 2024-02-28
 ---
 
 
-> Facial expression recognition (FER) is a pivotal task in computer vision with applications spanning from human-computer interaction to affective computing. In this project, we conduct a comparative analysis of three prominent model architectures for FER: a convolutional neural network (CNN), POSTERV2 [1] a cross-fusion transformer-based network, and YOLOv5. These architectures represent diverse approaches in leveraging deep learning techniques for facial expression analysis. We evaluate the performance of each model architecture on RAF-DB, which encompass a wide range of facial expressions under various contexts. The evaluation metrics include accuracy and number of parameters, which give comprehensive insights into the models' capabilities in recognizing facial expressions accurately across different datasets. Our evaluations have shown that the POSTERV2 model outperforms the other models in terms of accuracy. We also present a demonstration of the YOLOv5 model running on a webcam and training a custom model to recognize "awake" and "sleep" expressions. Our findings provide valuable insights into the strengths and limitations of different model architectures for FER, which can guide the selection of appropriate models for specific applications. 
+> Facial expression recognition (FER) is a pivotal task in computer vision with applications spanning from human-computer interaction to affective computing. In this project, we conduct a comparative analysis of three prominent model architectures for FER: a feature decomposition and feature reconstruction network (FDRL), a cross-fusion transformer-based network (POSTERV2), and YOLOv5. These architectures represent diverse approaches in leveraging deep learning techniques for facial expression analysis. We evaluate the performance of each model architecture on RAF-DB, which encompass a wide range of facial expressions under various contexts. The evaluation metrics include accuracy and number of parameters, which give comprehensive insights into the models' capabilities in recognizing facial expressions accurately across different datasets. Our evaluations have shown that the POSTERV2 model outperforms the other models in terms of accuracy. We also present a demonstration of the YOLOv5 model running on a webcam and training a custom model to recognize "awake" and "sleep" expressions. Our findings provide valuable insights into the strengths and limitations of different model architectures for FER, which can guide the selection of appropriate models for specific applications. 
 
 
 <!--more-->
@@ -34,7 +34,7 @@ In this project, we explore three prominent deep neural network architectures fo
 The FDRL model identifies that there can be large similarities between different expression (inter-class similarities) and differences within the same expression (intra-class discrepancies). Thus, facial expressions are interpreted as a combination of shared information (or “expression similarities”) between different expressions and unique information (or “expression-specific variations”) within the same expression. Expression similarities are represented by shared latent features between expressions, while expression-specific variations are denoted by the feature weights. This way, the model captures more fine-grained features from facial images. The model consists of 4 networks: Backbone Network, Feature Decomposition Network (FDN), Feature Reconstruction Network (FRN), and Expression Prediction Network (EPN).
 
 ![]({{'/assets/images/team27/fdrl_architecture.png'|relative_url}}) 
-*Fig 1. FDRL model architecture [4]*
+*Fig 1. FDRL model architecture [5]*
 
 **Backbone Network**
 
@@ -79,24 +79,24 @@ The paper chooses to train the FDRL model on a TITAN X GPU for 40 epochs with a 
 An alternative approach to FER is the POSTER V2 model, an enhanced version of the original POSTER model. The original POSTER model has 4 main features, namely a landmark detector, an image backbone, cross-fusion transformer encoders and a pyramid network. Given an input image, the landmark detector extracts detailed facial landmark features while the image backbone extracts generic image features. Following that, the landmark and image features are concatenated and scaled to different sizes, before interacting via cross-attention in separate cross-fusion transformer encoders for each scale. Finally, the model extracts and integrates the outputs of each encoder into a multi-scale landmark and image feature. Despite achieving state-of-the-art performance in FER, the architecture of the original POSTER model is highly complicated, resulting in expensive computational costs. Hence, POSTER V2 implements 3 key improvements on top of the original POSTER model architecture that not only reduce computational costs, but also enhance model performance.
 
 ![]({{'/assets/images/team27/original_POSTER.png'|relative_url}}) 
-*Fig 2. Original POSTER model architecture [3]*
+*Fig 2. Original POSTER model architecture [4]*
 
 ![]({{'/assets/images/team27/POSTER_v2.png'|relative_url}}) 
-*Fig 3. POSTER V2 model architecture [3]*
+*Fig 3. POSTER V2 model architecture [4]*
 
 **Improvement 1: Remove Image-to-Landmark Branch** 
 
 A primary characteristic of the original POSTER model is its two-stream design that consists of both an image-to-landmark branch, and a landmark-to-image branch. To reduce computational cost, the POSTER V2 research team conducted an ablation study to determine which branch plays a more decisive role in model performance, so as to remove the less decisive branch. As seen from the results below, the landmark-to-image branch proved to be the more decisive one. The following explanation accounts for this trend from an intuitive perspective. In the landmark-to-image branch, image features are guided by landmark features, which are the query vectors in the cross-attention mechanism. Since landmark features highlight the most important regions of the face, it reduces discrepancies within the same class, which are emotions for FER tasks. Furthermore, it diverts focus away from face-prevalent regions, thus reducing similarities among different classes. Therefore, by retaining the landmark-to-image branch, POSTER V2 ensures that key FER issues such as intra-class discrepancy and inter-class similarity are mitigated. At the same time, removing the image-to-landmark branch enhances computational efficiency to a much more significant extent than the slight drop in model accuracy.
 
 ![]({{'/assets/images/team27/two_stream.png'|relative_url}}) 
-*Fig 4. Removing image-to-landmark vs landmark-to-image branch [3]*
+*Fig 4. Removing image-to-landmark vs landmark-to-image branch [4]*
 
 **Improvement 2: Window-Based Cross-Attention**
 
-instead of the vanilla cross-attention mechanism used in the original POSTER model, POSTER v2 opted for window-based cross-attention. As depicted in the visualization below, the first step is to divide the image feature on the right into non-overlapping windows. For each window, the landmark feature is downsampled to the size of the window, following which the cross-attention between the image and landmark features is calculated. This cross-attention calculation is performed for all windows. Compared to the vanilla cross-attention mechanism in the original POSTER model, the time complexity of this step has been reduced from O(N^2) to O(N), thus enhancing the model's computational efficiency. 
+instead of the vanilla cross-attention mechanism used in the original POSTER model, POSTER v2 opted for window-based cross-attention. As depicted in the visualization below, the first step is to divide the image feature on the right into non-overlapping windows. For each window, the landmark feature is downsampled to the size of the window, following which the cross-attention between the image and landmark features is calculated. This cross-attention calculation is performed for all windows. Compared to the vanilla cross-attention mechanism in the original POSTER model, the time complexity of this step has been reduced from $$O(N^2)$$ to $$O(N)$$, thus enhancing the model's computational efficiency. 
 
 ![]({{'/assets/images/team27/window_based_cross_attention.png'|relative_url}}) 
-*Fig 5. Window-based cross-attention mechanism [3]*
+*Fig 5. Window-based cross-attention mechanism [4]*
 
 **Improvement 3: Multi-Scale Feature Extraction**
 
@@ -160,7 +160,7 @@ We compare the performance of the three model architectures on [RAF-DB](https://
 **FDRL**
 
 ![]({{'/assets/images/team27/FDRL_performance.png'|relative_url}}) 
-*Fig 8. Performance of FDRL on RAF-DB Dataset [4]*
+*Fig 8. Performance of FDRL on RAF-DB Dataset [5]*
 
 The FDRL model achieved an accuracy of 89.47% on the RAF-DB dataset, which is a competitive result compared to other state-of-the-art models.
 
@@ -168,16 +168,16 @@ The FDRL model achieved an accuracy of 89.47% on the RAF-DB dataset, which is a 
 **YoloV5**
 
 ![]({{'/assets/images/team27/yolo_performance.png'|relative_url}}) 
-*Fig 9. Different models experiment on RAF-DB Dataset [6]*
+*Fig 9. Different models experiment on RAF-DB Dataset [7]*
 
-Evaluating YOLOv5 on the RAF-DB dataset gives us an accuracy of 73.6% and mAP@0.5 (%) of 81.8%, most notably, the inference time was only 15ms [6].
+Evaluating YOLOv5 on the RAF-DB dataset gives us an accuracy of 73.6% and mAP@0.5 (%) of 81.8%, most notably, the inference time was only 15ms [7].
 
 **Poster V2**
 
 PosterV2, also known as Poster++, exhibits state-of-the-art performance on the FER task, outperforming the other models in terms of mean accuracy. Out of the three models, Poster++ achieved the highest accuracy on the RAF-DB dataset with an accuracy of 92.21% across all classes.
 
 ![PosterV2]({{'/assets/images/team27/posterv2_params.png'|relative_url}})
-*Fig 10. Performance, parameters and FLOPs of Poster V2 [3]*
+*Fig 10. Performance, parameters and FLOPs of Poster V2 [4]*
 
 Despite acheiving SOTA results on FER, Poster++ maintains a number of parameters (43.7M) comparable to YoloV5 (46.2M). Thus, Poster++ is a much more memory efficient model for the FER task.
 
@@ -185,7 +185,7 @@ Despite acheiving SOTA results on FER, Poster++ maintains a number of parameters
 
 **FDRL**
 
-FDRL is specifically designed to handle the nuances of facial expressions by distinguishing between shared and unique information across different expressions, which could enhance its sensitivity to subtle facial cues. The method's decomposition and reconstruction process allows for a more detailed and nuanced understanding of facial features, potentially leading to higher accuracy in complex scenarios. However,the complexity of the model, with its multiple networks (Backbone, FDN, FRN, and EPN), could lead to higher computational costs and longer training times compared to more streamlined models. FDRL is also known to not handle noisy labels and ambiguous expressions well, which could limit its robustness in real-world scenarios [7]. FDLR also addresses intra-class discrepancy and inter-class similarity issues only using image features, but does not address scale sensitivity. Thus, the model is sensitive to image quality and resolution changes, and does not have consistent performance across scales. These limitations could affect its generalization across diverse datasets and robustness in real-world scenarios. 
+FDRL is specifically designed to handle the nuances of facial expressions by distinguishing between shared and unique information across different expressions, which could enhance its sensitivity to subtle facial cues. The method's decomposition and reconstruction process allows for a more detailed and nuanced understanding of facial features, potentially leading to higher accuracy in complex scenarios. However,the complexity of the model, with its multiple networks (Backbone, FDN, FRN, and EPN), could lead to higher computational costs and longer training times compared to more streamlined models. FDRL is also known to not handle noisy labels and ambiguous expressions well, which could limit its robustness in real-world scenarios [3]. FDRL also addresses intra-class discrepancy and inter-class similarity issues only using image features, but does not address scale sensitivity. Thus, the model is sensitive to image quality and resolution changes, and does not have consistent performance across scales. These limitations could affect its generalization across diverse datasets and robustness in real-world scenarios. 
 
 **YoloV5**
 
@@ -212,7 +212,7 @@ On top of studying the approaches to FER on paper, we also wanted to run an exis
 
 ### 2. Training our own "awake" and "sleep" class
 
-To supplement our project, we wanted to explore and train a model with two new custom classes for facial expression recognition. We collated our own dataset of 40 images (20 awake, 20 sleep) and annotated them using RoboFlow. Subsequently, we used the yolov5 architecture to train our own custom model.
+To supplement our project, we wanted to explore and train a model with two new custom classes for facial expression recognition. We collated our own dataset of 40 images (20 awake, 20 sleep) and annotated them using RoboFlow. Subsequently, we used the YOLOv5 architecture to train our own custom model.
 
 ![]({{'/assets/images/team27/roboflow_images.png'|relative_url}}) 
 *Fig 12. Image Annotations on Roboflow*
@@ -243,14 +243,14 @@ Model summary: 157 layers, 7015519 parameters, 0 gradients, 15.8 GFLOPs
 
 [2] Lu, Z., Lu, J., Ge, Q., Zhan, T. Multi-object detection method based on Yolo and ResNet Hybrid Networks. 2019 IEEE 4th International Conference on Advanced Robotics and Mechatronics (ICARM). (2019) https://doi.org/10.1109/icarm.2019.8833671
 
-[3] Mao, Jiawei and Xu, Rui and Yin, Xuesong and Chang, Yuanqi and Nie, Binling and Huang, Aibin. POSTER V2: A simpler and stronger facial expression recognition network. arXiv preprint arXiv:2301.12149. (2023) https://arxiv.org/pdf/2301.12149
+[3] Lukov, T., Zhao, N., Lee, G. H., & Lim, S.-N. (2022). Teaching with Soft Label Smoothing for Mitigating Noisy Labels in Facial Expressions. EECV (pp. 648-665). https://doi.org/10.1007/978-3-031-19775-8_38
 
-[4] Ruan, D., Yan, Y., Lai, S., Chai, Z., Shen, C., Wang, H. Feature decomposition and reconstruction learning for effective facial expression recognition. Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 7660–7669 (2021) https://arxiv.org/pdf/2104.05160
+[4] Mao, Jiawei and Xu, Rui and Yin, Xuesong and Chang, Yuanqi and Nie, Binling and Huang, Aibin. POSTER V2: A simpler and stronger facial expression recognition network. arXiv preprint arXiv:2301.12149. (2023) https://arxiv.org/pdf/2301.12149
 
-[5] Ultralytics. YOLOV5. PyTorch Hub. https://pytorch.org/hub/ultralytics_yolov5/
+[5] Ruan, D., Yan, Y., Lai, S., Chai, Z., Shen, C., Wang, H. Feature decomposition and reconstruction learning for effective facial expression recognition. Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 7660–7669 (2021) https://arxiv.org/pdf/2104.05160
 
-[6] Zhong, H., Han, T., Xia, W. et al. Research on real-time teachers’ facial expression recognition based on YOLOv5 and attention mechanisms. EURASIP J. Adv. Signal Process. 2023, 55 (2023). https://doi.org/10.1186/s13634-023-01019-w
+[6] Ultralytics. YOLOV5. PyTorch Hub. https://pytorch.org/hub/ultralytics_yolov5/
 
-[7] Lukov, T., Zhao, N., Lee, G. H., & Lim, S.-N. (2022). Teaching with Soft Label Smoothing for Mitigating Noisy Labels in Facial Expressions. EECV (pp. 648-665). https://doi.org/10.1007/978-3-031-19775-8_38
+[7] Zhong, H., Han, T., Xia, W. et al. Research on real-time teachers’ facial expression recognition based on YOLOv5 and attention mechanisms. EURASIP J. Adv. Signal Process. 2023, 55 (2023). https://doi.org/10.1186/s13634-023-01019-w
 
 ---
